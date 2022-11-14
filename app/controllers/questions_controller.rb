@@ -28,7 +28,7 @@ class QuestionsController < ApplicationController
     if current_user.author_of?(@question)
       @question.destroy
     else
-      flash[:alert] = "You can't delete another's answer."
+      flash[:alert] = "You can't delete another's question."
     end
     redirect_to questions_path
   end

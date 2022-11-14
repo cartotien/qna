@@ -91,7 +91,7 @@ RSpec.describe "Questions", type: :request do
         expect { http_request }.to change(Question, :count).by(-1)
       end
 
-      it "deletes the questions from user's question" do
+      it "deletes the question from user's questions" do
         expect { http_request }.to change(user.questions, :count).by(-1)
       end
     end

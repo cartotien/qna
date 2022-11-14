@@ -6,7 +6,7 @@ class User < ApplicationRecord
   devise :confirmable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  def author_of_answer?(answer)
-    answers.include?(answer)
+  def author_of?(resource)
+    id == resource.user_id
   end
 end

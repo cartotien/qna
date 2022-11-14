@@ -5,6 +5,7 @@ RSpec.describe "Questions", type: :request do
   let(:valid_attributes) { { question: attributes_for(:question) } }
   let(:invalid_attributes) { { question: attributes_for(:question, :invalid) } }
   let(:user) { create(:user, :confirmed_user) }
+  let(:false_user) { create(:user, :confirmed_user) }
 
   describe "GET #index" do
     let!(:questions) { create_list :question, 3, user: user }
@@ -80,15 +81,23 @@ RSpec.describe "Questions", type: :request do
   end
 
   describe "DELETE #destroy" do
-    before { sign_in(user) }
-
     let!(:question) { create :question, user: user }
 
-    it "deletes the question" do
+    it "deletes the question of author" do
+      sign_in(user)
+
       expect { delete question_path(question) }.to change(Question, :count).by(-1)
     end
 
+    it "doesn't delete the question of another user" do
+      sign_in(false_user)
+
+      expect { delete question_path(question) }.not_to change(Question, :count)
+    end
+
     it "redirects to index" do
+      sign_in(user)
+
       delete question_path(question)
 
       expect(response).to redirect_to questions_path

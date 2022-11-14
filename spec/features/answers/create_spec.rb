@@ -10,10 +10,12 @@ feature "Authenticated user can create answers", %q(
   given(:question) { create(:question, user: author) }
 
   describe "Authenticated user" do
-    scenario "Tries to create answer" do
+    background do
       sign_in(user)
       visit question_path(question)
+    end
 
+    scenario "Tries to create answer" do
       fill_in "Body", with: "MyText"
       click_on "Submit Answer"
 
@@ -21,9 +23,6 @@ feature "Authenticated user can create answers", %q(
     end
 
     scenario "Tries to create answer with invalid params" do
-      sign_in(user)
-      visit question_path(question)
-
       fill_in "Body", with: ""
       click_on "Submit Answer"
 
@@ -41,5 +40,4 @@ feature "Authenticated user can create answers", %q(
       expect(page).to have_content("You need to sign in or sign up before continuing.")
     end
   end
-
 end

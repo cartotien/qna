@@ -1,0 +1,4 @@
+tr
+  td= answer.body
+  -if current_user&.author_of_answer?(answer)
+    = link_to 'Delete', answer, method: :delete, data: { confirm: 'Are you sure?' }

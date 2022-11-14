@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    meta charset="UTF-8"
+    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    title StackCopyflow
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+
+  body
+    nav 
+      tr 
+        -if user_signed_in?
+          td = current_user.email 
+          td = link_to "Log out", destroy_user_session_path, method: :delete
+        -else
+          td = link_to "Sign in", new_user_session_path unless current_page?(new_user_session_path)
+          td = link_to "Sign up", new_user_registration_path unless current_page?(new_user_registration_path)
+    = render 'shared/flash'
+    = yield

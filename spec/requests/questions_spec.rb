@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe "Questions", type: :request do
-  let(:question) { create :question }
+  let(:question) { create :question, user: user }
   let(:valid_attributes) { { question: attributes_for(:question) } }
   let(:invalid_attributes) { { question: attributes_for(:question, :invalid) } }
+  let(:user) { create(:user, :confirmed_user) }
 
   describe "GET #index" do
-    let!(:questions) { create_list :question, 3 }
+    let!(:questions) { create_list :question, 3, user: user }
 
     before { get questions_path }
 
@@ -32,6 +33,7 @@ RSpec.describe "Questions", type: :request do
   end
 
   describe "GET #new" do
+    before { sign_in(user) }
     before { get new_question_path }
 
     it "assigns a new Question to @question" do
@@ -44,6 +46,8 @@ RSpec.describe "Questions", type: :request do
   end
 
   describe "POST #create" do
+    before { sign_in(user) }
+
     context "with valid attributes" do
       let(:valid_request) { post questions_path, params: valid_attributes }
 
@@ -59,6 +63,8 @@ RSpec.describe "Questions", type: :request do
     end
 
     context "with invalid attributes" do
+      before { sign_in(user) }
+
       let!(:invalid_request) { post questions_path, params: invalid_attributes }
 
       it "doesn't save the question" do
@@ -70,6 +76,22 @@ RSpec.describe "Questions", type: :request do
 
         expect(response).to render_template :new
       end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    before { sign_in(user) }
+
+    let!(:question) { create :question, user: user }
+
+    it "deletes the question" do
+      expect { delete question_path(question) }.to change(Question, :count).by(-1)
+    end
+
+    it "redirects to index" do
+      delete question_path(question)
+
+      expect(response).to redirect_to questions_path
     end
   end
 end

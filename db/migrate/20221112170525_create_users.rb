@@ -9,11 +9,11 @@ class CreateUsers < ActiveRecord::Migration[6.0]
     end
 
     change_table :questions do |t|
-      t.references :users, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true
     end
 
     change_table :answers do |t|
-      t.references :users, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true
     end
   end
 end

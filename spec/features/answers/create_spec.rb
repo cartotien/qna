@@ -10,7 +10,6 @@ feature "Authenticated user can create answers", %q(
   given(:question) { create(:question, user: author) }
 
   describe "Authenticated user" do
-
     scenario "Tries to create answer" do
       sign_in(user)
       visit question_path(question)
@@ -19,6 +18,16 @@ feature "Authenticated user can create answers", %q(
       click_on "Submit Answer"
 
       expect(page).to have_content("MyText")
+    end
+
+    scenario "Tries to create answer with invalid params" do
+      sign_in(user)
+      visit question_path(question)
+
+      fill_in "Body", with: ""
+      click_on "Submit Answer"
+
+      expect(page).to have_content("Body can't be blank")
     end
   end
 

@@ -82,17 +82,26 @@ RSpec.describe "Questions", type: :request do
 
   describe "DELETE #destroy" do
     let!(:question) { create :question, user: user }
+    let(:http_request) { delete question_path(question) }
 
-    it "deletes the question of author" do
-      sign_in(user)
+    context "Authenticated user is the author of question" do
+      before { sign_in(user) }
 
-      expect { delete question_path(question) }.to change(Question, :count).by(-1)
+      it "deletes the question of author" do
+        expect { http_request }.to change(Question, :count).by(-1)
+      end
+
+      it "deletes the questions from user's question" do
+        expect { http_request }.to change(user.questions, :count).by(-1)
+      end
     end
 
-    it "doesn't delete the question of another user" do
-      sign_in(false_user)
+    context "Autenticated user is not the author of question" do
+      it "doesn't delete the question of another user" do
+        sign_in(false_user)
 
-      expect { delete question_path(question) }.not_to change(Question, :count)
+        expect { http_request }.not_to change(Question, :count)
+      end
     end
 
     it "redirects to index" do

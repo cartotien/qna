@@ -20,6 +20,7 @@ gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
+gem 'devise'
 # gem 'bcrypt', '~> 3.1.7'
 gem 'bootstrap'
 # Use Active Storage variant
@@ -34,6 +35,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rails-controller-testing'
   gem 'factory_bot_rails'
+  gem 'letter_opener'
 end
 
 group :development do

@@ -1,24 +1,36 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!, except: %i[show index]
   before_action :set_question, only: %i[show edit update destroy]
 
   def index
     @questions = Question.all
   end
 
-  def show; end
+  def show
+    @answer = Answer.new
+  end
 
   def new
-    @question = Question.new
+    @question = current_user.questions.build
   end
 
   def create
-    @question = Question.new(question_params)
+    @question = current_user.questions.build(question_params)
 
     if @question.save
-      redirect_to @question
+      redirect_to @question, notice: 'Question was created successfully.'
     else
       render :new
     end
+  end
+
+  def destroy
+    if current_user.author_of?(@question)
+      @question.destroy
+    else
+      flash[:alert] = "You can't delete another's question."
+    end
+    redirect_to questions_path
   end
 
   private

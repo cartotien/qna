@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "Questions", type: :request do
-  let(:question) { create :question }
+  let(:question) { create :question, user: user }
   let(:valid_attributes) { { question: attributes_for(:question) } }
   let(:invalid_attributes) { { question: attributes_for(:question, :invalid) } }
+  let(:user) { create(:user, :confirmed_user) }
+  let(:false_user) { create(:user, :confirmed_user) }
 
   describe "GET #index" do
-    let!(:questions) { create_list :question, 3 }
+    let!(:questions) { create_list :question, 3, user: user }
 
     before { get questions_path }
 
@@ -32,6 +34,7 @@ RSpec.describe "Questions", type: :request do
   end
 
   describe "GET #new" do
+    before { sign_in(user) }
     before { get new_question_path }
 
     it "assigns a new Question to @question" do
@@ -44,6 +47,8 @@ RSpec.describe "Questions", type: :request do
   end
 
   describe "POST #create" do
+    before { sign_in(user) }
+
     context "with valid attributes" do
       let(:valid_request) { post questions_path, params: valid_attributes }
 
@@ -59,6 +64,8 @@ RSpec.describe "Questions", type: :request do
     end
 
     context "with invalid attributes" do
+      before { sign_in(user) }
+
       let!(:invalid_request) { post questions_path, params: invalid_attributes }
 
       it "doesn't save the question" do
@@ -70,6 +77,39 @@ RSpec.describe "Questions", type: :request do
 
         expect(response).to render_template :new
       end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:question) { create :question, user: user }
+    let(:http_request) { delete question_path(question) }
+
+    context "Authenticated user is the author of question" do
+      before { sign_in(user) }
+
+      it "deletes the question of author" do
+        expect { http_request }.to change(Question, :count).by(-1)
+      end
+
+      it "deletes the question from user's questions" do
+        expect { http_request }.to change(user.questions, :count).by(-1)
+      end
+    end
+
+    context "Autenticated user is not the author of question" do
+      it "doesn't delete the question of another user" do
+        sign_in(false_user)
+
+        expect { http_request }.not_to change(Question, :count)
+      end
+    end
+
+    it "redirects to index" do
+      sign_in(user)
+
+      delete question_path(question)
+
+      expect(response).to redirect_to questions_path
     end
   end
 end

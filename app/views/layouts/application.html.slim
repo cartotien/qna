@@ -11,13 +11,14 @@ html
     = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
 
   body
-    nav 
-      tr 
-        -if user_signed_in?
-          td = current_user.email 
-          td = link_to "Log out", destroy_user_session_path, method: :delete
-        -else
-          td = link_to "Sign in", new_user_session_path unless current_page?(new_user_session_path)
-          td = link_to "Sign up", new_user_registration_path unless current_page?(new_user_registration_path)
-    = render 'shared/flash'
-    = yield
+    .navbar 
+      -if user_signed_in?
+        td = current_user.email 
+        td = link_to "Log out", destroy_user_session_path, method: :delete
+      -else
+        td = link_to "Sign in", new_user_session_path unless current_page?(new_user_session_path)
+        td = link_to "Sign up", new_user_registration_path unless current_page?(new_user_registration_path)
+    .container
+      .flash
+        = render 'shared/flash'
+      = yield

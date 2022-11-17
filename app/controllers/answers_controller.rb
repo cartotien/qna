@@ -1,21 +1,17 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: :create
+  before_action :authenticate_user!, only: %i[create destroy update mark_as_best]
   before_action :set_question, only: %i[new create]
-  before_action :set_answer, only: :destroy
+  before_action :set_answer, only: %i[update destroy mark_as_best]
 
   def new
     @answer = @question.answers.build
   end
 
   def create
-    @answer = @question.answers.build(answer_params)
+    @answer = @question.answers.new(answer_params)
     @answer.user = current_user
-
-    if @answer.save
-      redirect_to @question
-    else
-      render :new
-    end
+    @answer.save
+    flash[:notice] = "Answer was created successfully."
   end
 
   def destroy
@@ -25,13 +21,30 @@ class AnswersController < ApplicationController
     else
       flash[:notice] = "You can't delete another's answer."
     end
-    redirect_to @answer.question
+  end
+
+  def update
+    if current_user.author_of?(@answer)
+      @answer.update(answer_params)
+      flash[:notice] = "Answer was updated successfully."
+    else
+      flash[:alert] = "You can't edit another's answer"
+    end
+  end
+
+  def mark_as_best
+    if current_user.author_of?(@answer.question)
+      @answer.mark_as_best
+      flash[:notice] = "Best answer was chosen successfully!"
+    else
+      flash[:alert] = "You can't select the answer as best as a non-author!"
+    end
   end
 
   private
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, user_id: current_user)
   end
 
   def set_question

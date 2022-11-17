@@ -1,0 +1,5 @@
+$('.flash').html('<%= render 'shared/flash' %>')
+$('.answer-errors-update').html('<%= render 'shared/errors', resource: @answer %>');
+<% if !@answer.errors.present? %>
+  $('div#<%= @answer.id %>.answer').replaceWith('<%= j render @answer %>');
+<% end %>

@@ -1,0 +1,2 @@
+$('.flash').html('<%= render 'shared/flash' %>')
+$('.answers').html('<%= j render @answer.question.answers.sort_by_best %>');

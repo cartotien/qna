@@ -112,4 +112,37 @@ RSpec.describe "Questions", type: :request do
       expect(response).to redirect_to questions_path
     end
   end
+
+  describe "PATCH #update" do
+    context "with valid attributes" do
+      let(:valid_request) { patch question_path(question), xhr: true, params: { question: { title: 'new title', body: 'new body' } } }
+
+      before do
+        sign_in(user)
+        valid_request
+      end
+
+      it "updates the question" do
+        question.reload
+
+        expect(question.title).to eq('new title')
+        expect(question.body).to eq('new body')
+      end
+    end
+
+    context "with invalid attributes" do 
+      let!(:invalid_request) { patch question_path(question), xhr: true, params: invalid_attributes }
+
+      it "doesn't update the question" do
+        expect { invalid_request }.not_to change { question }
+      end
+    end
+
+    it "renders update view" do
+      sign_in(user)
+      patch question_path(question), xhr: true, params: { question: { title: 'new title', body: 'new body' } }
+
+      expect(response).to render_template :update
+    end
+  end
 end

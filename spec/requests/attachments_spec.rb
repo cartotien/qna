@@ -27,5 +27,11 @@ RSpec.describe 'Attachments', type: :request do
         expect(response).to render_template :destroy
       end
     end
+
+    context "Unauthenticated user" do
+      it "doesn't destroy another's attachment" do
+        expect { delete attachment_path(attachment), xhr: true }.not_to change(question.files, :count)
+      end
+    end
   end
 end

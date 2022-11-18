@@ -41,11 +41,6 @@ class AnswersController < ApplicationController
     end
   end
 
-  def destroy_attachment
-    @attachment = ActiveStorage::Blob.find_signed(params[:id])
-    @attachment.purge
-  end
-
   private
 
   def answer_params

@@ -1,4 +1,15 @@
-td= question.title
-td= question.body
--if current_user&.author_of?(question)
-  td= link_to "Delete Question", question, method: :delete, data: { confirm: "Are you sure?" }
+.question
+  td= question.title
+  td= question.body
+  - if current_user&.author_of?(question)
+    td= link_to "Delete Question", question, method: :delete, data: { confirm: "Are you sure?" }
+    td= link_to "Edit Question", '#', class: 'edit-question-link'
+    .question-errors
+
+    = form_with model: question, local: false, class: 'd-none', id: "edit-question" do |f|
+      .form-group 
+      = f.label :title
+      = f.text_field :title
+      = f.label :body
+      = f.text_area :body
+      = f.submit "Save"

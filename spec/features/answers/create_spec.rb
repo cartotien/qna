@@ -15,29 +15,31 @@ feature "Authenticated user can create answers", %q(
       visit question_path(question)
     end
 
-    scenario "Tries to create answer" do
+    scenario "Tries to create answer", js: true do
       fill_in "Body", with: "MyText"
       click_on "Submit Answer"
 
-      expect(page).to have_content("MyText")
+      within '.answers' do
+        expect(page).to have_content("MyText")
+      end
     end
 
-    scenario "Tries to create answer with invalid params" do
+    scenario "Tries to create answer with invalid params", js: true do
       fill_in "Body", with: ""
       click_on "Submit Answer"
 
-      expect(page).to have_content("Body can't be blank")
+      within '.answer-errors-creation' do
+        expect(page).to have_content("Body can't be blank")
+      end
     end
   end
 
   describe "Unauthenticated user" do
-    scenario "Tries to create answer" do
+    scenario "Tries to create answer", js: true do
       visit question_path(question)
 
-      fill_in "Body", with: "MyText"
-      click_on "Submit Answer"
 
-      expect(page).to have_content("You need to sign in or sign up before continuing.")
+      expect(page).to_not have_field("Body")
     end
   end
 end

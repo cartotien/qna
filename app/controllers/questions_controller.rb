@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = Answer.new
+    @answers = @question.answers.sort_by_best
   end
 
   def new
@@ -31,6 +32,15 @@ class QuestionsController < ApplicationController
       flash[:alert] = "You can't delete another's question."
     end
     redirect_to questions_path
+  end
+
+  def update
+    if current_user.author_of?(@question)
+      @question.update(question_params)
+      flash[:notice] = "Question was updated successfully."
+    else
+      flash[:alert] = "You can't change another's question."
+    end
   end
 
   private

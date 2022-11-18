@@ -1,19 +1,25 @@
-= render 'shared/flash'
+.py-4
+  h3 Question
+  = render @question
+.px-3
+  h3.py-3 Answers
+  -if @answers.any?
+    .answers
+      .answer-errors-update
+      = render @answers
+  -else
+    .answers
+      .answer-errors-update
+      h3.py-3 No Answers yet
 
-h3 Question
-div
-  p= @question.title
-  p= @question.body
+  -if user_signed_in?
+    h3.py-3 Submit Answer
+    .answer-errors-creation
 
-h3 Answers
-div= render @question.answers
+    = form_with model: [@question, @answer], local: false, class: 'form-control new-answer' do |f| 
 
-h3 Submit Answer
-div= form_with model: [@question, @answer], local: true do |f|
-  = render 'shared/errors', resource: @answer
-
-  = f.label :body
-  = f.text_field :body
-
-  = f.submit "Submit Answer"
-
+      .form-group
+        = f.label :body
+        = f.text_area :body, class: 'form-control'
+      br
+      = f.submit "Submit Answer"

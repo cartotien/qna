@@ -1,0 +1,4 @@
+.attachment id= file.id
+  p= link_to file.filename.to_s, url_for(file)
+  -if current_user&.author_of?(file.record)
+    p= link_to 'X', attachment_path(file), method: :delete, remote: true

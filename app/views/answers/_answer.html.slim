@@ -1,7 +1,9 @@
-.answer id= answer.id
-  td= answer.body
+.answer.py-1 id= answer.id
   -if answer.best == true 
-    td Best Answer
+    p Best Answer
+  p= answer.body
+  -if answer.files.attached?
+    = render partial: 'shared/file', collection: answer.files, as: :file
   -if current_user&.author_of?(answer) && answer.persisted?
     = link_to 'Delete', answer, method: :delete, remote: true, data: { confirm: 'Are you sure?' }
     = link_to 'Edit', '#', class: "edit-answer-link", data: { answer_id: answer.id }
@@ -9,6 +11,8 @@
       .form-group
       = f.label :body
       = f.text_area :body
+      = f.label :files 
+      = f.file_field :files, multiple: true
       = f.submit "Save"
   -if current_user&.author_of?(answer.question) && answer.persisted?
     = link_to 'Mark As Best', mark_as_best_answer_path(answer), method: :patch, remote: true

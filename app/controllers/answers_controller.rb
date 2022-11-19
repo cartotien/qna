@@ -11,13 +11,13 @@ class AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
     @answer.save
-    flash[:notice] = "Answer was created successfully."
+    flash[:notice] = 'Answer was created successfully.'
   end
 
   def destroy
     if current_user.author_of?(@answer)
       @answer.destroy
-      flash[:notice] = "Answer was deleted successfully."
+      flash[:notice] = 'Answer was deleted successfully.'
     else
       flash[:notice] = "You can't delete another's answer."
     end
@@ -26,7 +26,7 @@ class AnswersController < ApplicationController
   def update
     if current_user.author_of?(@answer)
       @answer.update(answer_params)
-      flash[:notice] = "Answer was updated successfully."
+      flash[:notice] = 'Answer was updated successfully.'
     else
       flash[:alert] = "You can't edit another's answer"
     end
@@ -35,7 +35,7 @@ class AnswersController < ApplicationController
   def mark_as_best
     if current_user.author_of?(@answer.question)
       @answer.mark_as_best
-      flash[:notice] = "Best answer was chosen successfully!"
+      flash[:notice] = 'Best answer was chosen successfully!'
     else
       flash[:alert] = "You can't select the answer as best as a non-author!"
     end
@@ -44,7 +44,7 @@ class AnswersController < ApplicationController
   private
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, files: [])
   end
 
   def set_question
@@ -52,6 +52,6 @@ class AnswersController < ApplicationController
   end
 
   def set_answer
-    @answer = Answer.find(params[:id])
+    @answer = Answer.with_attached_files.find(params[:id])
   end
 end

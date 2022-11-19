@@ -21,5 +21,7 @@
       .form-group
         = f.label :body
         = f.text_area :body, class: 'form-control'
+        = f.label :files 
+        = f.file_field :files, multiple: true, direct_upload: true
       br
       = f.submit "Submit Answer"

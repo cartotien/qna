@@ -37,7 +37,7 @@ class QuestionsController < ApplicationController
   def update
     if current_user.author_of?(@question)
       @question.update(question_params)
-      flash[:notice] = "Question was updated successfully."
+      flash[:notice] = 'Question was updated successfully.'
     else
       flash[:alert] = "You can't change another's question."
     end
@@ -46,10 +46,10 @@ class QuestionsController < ApplicationController
   private
 
   def set_question
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, files: [])
   end
 end

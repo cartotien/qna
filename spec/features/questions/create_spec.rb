@@ -5,6 +5,7 @@ feature 'User is able to create question', '
   in order to seek help from community
 ' do
   given(:user) { create(:user, :confirmed_user) }
+  given(:gist_link) { 'https://gist.github.com/cartotien/09d41dc955dea1157744afdc08b77c03' }
 
   describe 'Authenticated user' do
     background do
@@ -41,6 +42,31 @@ feature 'User is able to create question', '
 
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
+    end
+
+    scenario 'Asks questions with link attached', js: true do
+      fill_in 'Title', with: 'Question Title'
+      fill_in 'Body', with: 'Question Body'
+      click_on 'add link'
+
+      within '.attachable-links' do
+        fill_in 'Name', with: 'Link Name'
+        fill_in 'Url', with: gist_link
+      end
+      click_on 'Ask'
+
+      expect(page).to have_link 'Link Name'
+    end
+
+    scenario 'Asks questions with an award attached', js: true do
+      fill_in 'Title', with: 'Question Title'
+      fill_in 'Body', with: 'Question Body'
+
+      fill_in 'Name', with: 'Link Name'
+      fill_in 'Link', with: 'https://df2sm3urulav.cloudfront.net/tenants/gr/uploads/content/chai0tqf1kuem8sf.jpg'
+      click_on 'Ask'
+
+      expect(page).to have_content 'Question with an award!'
     end
   end
 

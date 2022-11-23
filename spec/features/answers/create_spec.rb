@@ -7,6 +7,7 @@ feature 'Authenticated user can create answers', '
   given(:user) { create(:user, :confirmed_user) }
   given(:author) { create(:user, :confirmed_user) }
   given(:question) { create(:question, user: author) }
+  given(:gist_link) { 'https://gist.github.com/cartotien/09d41dc955dea1157744afdc08b77c03' }
 
   describe 'Authenticated user' do
     background do
@@ -39,6 +40,20 @@ feature 'Authenticated user can create answers', '
 
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
+    end
+
+    scenario 'Submits answer with links attached', js: true do
+      within '.new-answer' do
+        fill_in 'Body', with: 'Answer Body'
+        click_on 'add link'
+        fill_in 'Name', with: 'Link name'
+        fill_in 'Url', with: gist_link
+        click_on 'Submit Answer'
+      end
+
+      within '.answers' do
+        expect(page).to have_link 'Link name'
+      end
     end
   end
 

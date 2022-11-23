@@ -1,18 +1,36 @@
 .answer.py-1 id= answer.id
+
   -if answer.best == true 
     p Best Answer
   p= answer.body
+
   -if answer.files.attached?
     = render partial: 'shared/file', collection: answer.files, as: :file
+
+  -if answer.links.any?
+    .attached-links
+      p Links:
+      ul
+        = render partial: 'shared/link', collection: answer.links, as: :link
+
   -if current_user&.author_of?(answer) && answer.persisted?
     = link_to 'Delete', answer, method: :delete, remote: true, data: { confirm: 'Are you sure?' }
     = link_to 'Edit', '#', class: "edit-answer-link", data: { answer_id: answer.id }
+
     = form_with model: answer, local: false, class: 'd-none', id: "edit-answer-#{answer.id}" do |f|
       .form-group
+      p
       = f.label :body
       = f.text_area :body
+      p
       = f.label :files 
       = f.file_field :files, multiple: true, direct_upload: true
+
+      .attachable-links
+        = f.fields_for :links do |link|
+        .links
+          = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
       = f.submit "Save"
+      
   -if current_user&.author_of?(answer.question) && answer.persisted?
     = link_to 'Mark As Best', mark_as_best_answer_path(answer), method: :patch, remote: true

@@ -8,6 +8,7 @@ feature 'User is able to edit his answer', '
   given(:author) { create(:user, :confirmed_user) }
   given!(:question) { create(:question, user: author) }
   given!(:answer) { create(:answer, user: author, question: question) }
+  given(:gist_link) { 'https://gist.github.com/cartotien/09d41dc955dea1157744afdc08b77c03' }
 
   describe 'Authenticated user', js: true do
     context 'Author' do
@@ -51,6 +52,18 @@ feature 'User is able to edit his answer', '
 
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to have_link 'spec_helper.rb'
+      end
+
+      scenario 'tries to update answer with links attached' do
+        within '.answers' do
+          click_on 'Edit'
+          click_on 'add link'
+          fill_in 'Name', with: 'Link name'
+          fill_in 'Url', with: gist_link
+          click_on 'Save'
+        end
+
+        expect(page).to have_link 'Link name'
       end
     end
 

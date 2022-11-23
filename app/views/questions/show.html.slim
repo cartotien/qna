@@ -23,5 +23,9 @@
         = f.text_area :body, class: 'form-control'
         = f.label :files 
         = f.file_field :files, multiple: true, direct_upload: true
+        .attachable-links
+          = f.fields_for :links do |link|
+          .links
+            = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
       br
       = f.submit "Submit Answer"

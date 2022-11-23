@@ -7,6 +7,7 @@ feature 'User is able to edit his question', '
   given(:user) { create(:user, :confirmed_user) }
   given(:author) { create(:user, :confirmed_user) }
   given!(:question) { create(:question, user: author) }
+  given(:gist_link) { 'https://gist.github.com/cartotien/09d41dc955dea1157744afdc08b77c03' }
 
   scenario 'Unauthenticated user tries to edit question' do
     visit question_path(question)
@@ -55,6 +56,22 @@ feature 'User is able to edit his question', '
 
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to have_link 'spec_helper.rb'
+      end
+
+      scenario 'tries to edit question with link attached', js: true do
+        within 'form#edit-question' do
+          fill_in 'Title', with: 'Question Title'
+          fill_in 'Body', with: 'Question Body'
+          click_on 'add link'
+
+          within '.attachable-links' do
+            fill_in 'Name', with: 'Link Name'
+            fill_in 'Url', with: gist_link
+          end
+          click_on 'Save'
+        end
+
+        expect(page).to have_link 'Link Name'
       end
     end
 

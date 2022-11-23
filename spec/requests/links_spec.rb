@@ -14,7 +14,7 @@ RSpec.describe 'Link', type: :request do
         expect { delete link_path(link), xhr: true }.to change(question.links, :count)
       end
 
-      it "doesn't destroy another's attachment" do
+      it "doesn't destroy another's link" do
         sign_in(false_user)
 
         expect { delete link_path(link), xhr: true }.not_to change(question.links, :count)
@@ -29,7 +29,7 @@ RSpec.describe 'Link', type: :request do
     end
 
     context 'Unauthenticated user' do
-      it "doesn't destroy another's attachment" do
+      it "doesn't destroy another's link" do
         expect { delete link_path(link), xhr: true }.not_to change(question.links, :count)
       end
     end

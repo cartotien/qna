@@ -9,6 +9,7 @@ require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
 import "jquery"
+import '@nathanvda/cocoon'
 import '../stylesheets/application.scss'
 import '../utilities/questions.js'
 import '../utilities/answers.js'

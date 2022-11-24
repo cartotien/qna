@@ -1,8 +1,19 @@
 .question
+  -if question.award.present?
+    p Question with an award!
+    
   p= question.title
   p= question.body
+
   -if question.files.attached?
     = render partial: 'shared/file', collection: question.files, as: :file
+
+  -if question.links.any?
+    .attached-links
+      p Links:
+      ul
+        = render partial: 'shared/link', collection: question.links, as: :link
+
   - if current_user&.author_of?(question)
     td= link_to "Delete Question", question, method: :delete, data: { confirm: "Are you sure?" }
     td= link_to "Edit Question", '#', class: 'edit-question-link'
@@ -10,10 +21,17 @@
 
     = form_with model: question, local: false, class: 'd-none', id: "edit-question" do |f|
       .form-group 
-      = f.label :title
-      = f.text_field :title
-      = f.label :body
-      = f.text_area :body
-      = f.label :files
-      = f.file_field :files, multiple: true, direct_upload: true
+      p
+        = f.label :title
+        = f.text_field :title
+      p
+        = f.label :body
+        = f.text_area :body
+      p
+        = f.label :files
+        = f.file_field :files, multiple: true, direct_upload: true
+      .attachable-links
+        = f.fields_for :links do |link|
+        .links
+          = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
       = f.submit "Save"

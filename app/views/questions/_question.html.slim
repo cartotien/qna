@@ -5,6 +5,8 @@
   p= question.title
   p= question.body
 
+  = render 'shared/rate', resource: question
+
   -if question.files.attached?
     = render partial: 'shared/file', collection: question.files, as: :file
 

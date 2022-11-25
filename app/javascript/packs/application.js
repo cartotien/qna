@@ -13,6 +13,7 @@ import '@nathanvda/cocoon'
 import '../stylesheets/application.scss'
 import '../utilities/questions.js'
 import '../utilities/answers.js'
+import '../utilities/rate.js'
 
 window.jQuery = $;
 window.$ = $;

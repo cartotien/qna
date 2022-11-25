@@ -6,8 +6,16 @@ Rails.application.routes.draw do
   resources :attachments, only: :destroy
   resources :links, only: :destroy
 
-  resources :questions, only: %i[index show new create destroy update], shallow: true do
-    resources :answers, only: %i[new create destroy update mark_as_best] do
+  concern :rateable do
+    member do
+      patch :uprate
+      patch :downrate
+      delete :cancel
+    end
+  end
+
+  resources :questions, only: %i[index show new create destroy update], shallow: true, concerns: :rateable do
+    resources :answers, only: %i[new create destroy update mark_as_best], concerns: :rateable do
       patch :mark_as_best, on: :member
     end
   end

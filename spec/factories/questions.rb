@@ -8,6 +8,8 @@ FactoryBot.define do
   end
 
   factory :question do
+    association :user, factory: :user
+
     title
     body
   end

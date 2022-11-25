@@ -1,4 +1,6 @@
 class Question < ApplicationRecord
+  include Rateable
+
   belongs_to :user
 
   has_one :award, dependent: :destroy

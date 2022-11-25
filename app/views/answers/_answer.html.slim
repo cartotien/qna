@@ -3,6 +3,8 @@
   -if answer.best == true 
     p Best Answer
   p= answer.body
+  
+  = render 'shared/rate', resource: answer
 
   -if answer.files.attached?
     = render partial: 'shared/file', collection: answer.files, as: :file

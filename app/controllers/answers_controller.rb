@@ -1,5 +1,7 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: %i[create destroy update mark_as_best]
+  include Rated
+
+  before_action :authenticate_user!, except: :new
   before_action :set_question, only: %i[new create]
   before_action :set_answer, only: %i[update destroy mark_as_best]
 

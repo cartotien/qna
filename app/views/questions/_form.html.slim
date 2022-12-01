@@ -1,0 +1,16 @@
+= form_with model: question, local: false, class: 'd-none', id: "edit-question" do |f|
+  .form-group 
+  p
+    = f.label :title
+    = f.text_field :title
+  p
+    = f.label :body
+    = f.text_area :body
+  p
+    = f.label :files
+    = f.file_field :files, multiple: true, direct_upload: true
+  .attachable-links
+    = f.fields_for :links do |link|
+    .links
+      = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
+  = f.submit "Save"

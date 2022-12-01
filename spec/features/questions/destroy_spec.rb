@@ -8,7 +8,7 @@ feature "User is able to delete question" do
   scenario "User tries to delete his question" do
     sign_in(author)
 
-    visit questions_path
+    visit question_path(question)
 
     expect(page).to have_content('Delete Question')
   end
@@ -16,13 +16,13 @@ feature "User is able to delete question" do
   scenario "User tries to delete another's question" do
     sign_in(user)
 
-    visit questions_path
+    visit question_path(question)
 
     expect(page).not_to have_content('Delete Question')
   end
 
   scenario "Unuathenticated user tries to delete question" do
-    visit questions_path
+    visit question_path(question)
 
     expect(page).not_to have_content('Delete Question')
   end

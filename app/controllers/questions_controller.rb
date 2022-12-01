@@ -1,14 +1,17 @@
 class QuestionsController < ApplicationController
   include Rated
-  
+
   before_action :authenticate_user!, except: %i[show index]
   before_action :set_question, only: %i[show edit update destroy]
+
+  after_action :publish_question, only: :create
 
   def index
     @questions = Question.all
   end
 
   def show
+    gon.question_id = @question.id
     @answer = Answer.new
     @answers = @question.answers.sort_by_best
   end
@@ -47,6 +50,18 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def publish_question
+    return if @question.errors.any?
+
+    ActionCable.server.broadcast('questions_channel',
+                                 html:
+                                  ApplicationController.render(
+                                    partial: 'questions/question_index',
+                                    locals: { question: @question }
+                                  ),
+                                 author_id: current_user.id)
+  end
 
   def set_question
     @question = Question.with_attached_files.find(params[:id])

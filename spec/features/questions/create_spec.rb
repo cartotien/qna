@@ -70,6 +70,34 @@ feature 'User is able to create question', '
     end
   end
 
+  context 'multiple sessions' do
+    scenario "question appears on another user's page", js: true do
+      Capybara.using_session('user') do
+        sign_in(user)
+        visit questions_path
+      end
+
+      Capybara.using_session('guest') do
+        visit questions_path
+      end
+
+      Capybara.using_session('user') do
+        click_on 'Ask question'
+
+        fill_in 'Title', with: 'Question Title'
+        fill_in 'Body', with: 'Question Body'
+        click_on 'Ask'
+
+        expect(page).to have_content('Question Title')
+        expect(page).to have_content('Question Body')
+      end
+
+      Capybara.using_session('guest') do
+        expect(page).to have_content('Question Title')
+      end
+    end
+  end
+
   scenario "Unauthenticated user can't ask question" do
     visit questions_path
     click_on 'Ask question'

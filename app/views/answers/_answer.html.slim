@@ -5,6 +5,8 @@
   p= answer.body
   
   = render 'shared/rate', resource: answer
+  
+  = render 'comments/form', commentable: answer
 
   -if answer.files.attached?
     = render partial: 'shared/file', collection: answer.files, as: :file
@@ -14,6 +16,10 @@
       p Links:
       ul
         = render partial: 'shared/link', collection: answer.links, as: :link
+
+  .comments
+    -if answer.comments.any?
+      = render answer.comments
 
   -if current_user&.author_of?(answer) && answer.persisted?
     = link_to 'Delete', answer, method: :delete, remote: true, data: { confirm: 'Are you sure?' }

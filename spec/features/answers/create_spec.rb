@@ -57,6 +57,30 @@ feature 'Authenticated user can create answers', '
     end
   end
 
+  context 'multiple sessions' do
+    scenario "answer appears on another user's page", js: true do
+      Capybara.using_session('user') do
+        sign_in(user)
+        visit question_path(question)
+      end
+
+      Capybara.using_session('guest') do
+        visit question_path(question)
+      end
+
+      Capybara.using_session('user') do
+        fill_in 'Body', with: 'MyText'
+        click_on 'Submit Answer'
+
+        expect(page).to have_content('MyText')
+      end
+
+      Capybara.using_session('guest') do
+        expect(page).to have_content('MyText')
+      end
+    end
+  end
+
   describe 'Unauthenticated user' do
     scenario 'Tries to create answer', js: true do
       visit question_path(question)

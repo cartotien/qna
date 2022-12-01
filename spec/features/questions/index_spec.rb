@@ -10,8 +10,8 @@ feature "User can visit page with questions", %q(
   scenario "User visits index page" do
     visit questions_path
 
-    expect(page).to have_content(questions[0].body)
-    expect(page).to have_content(questions[1].body)
-    expect(page).to have_content(questions[2].body)
+    expect(page).to have_content(questions[0].title)
+    expect(page).to have_content(questions[1].title)
+    expect(page).to have_content(questions[2].title)
   end
 end

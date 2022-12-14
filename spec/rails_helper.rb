@@ -36,6 +36,7 @@ RSpec.configure do |config|
   config.include RequestHelper, type: :request
   config.prepend AcceptanceHelper, type: :feature
   config.include BlobHelper
+  config.include OmniauthHelper
 
   Capybara.javascript_driver = :selenium_chrome_headless
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -80,3 +81,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+OmniAuth.config.test_mode = true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_26_041537) do
+ActiveRecord::Schema.define(version: 2022_12_13_142023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,6 +69,15 @@ ActiveRecord::Schema.define(version: 2022_11_26_041537) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "identities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
   create_table "links", force: :cascade do |t|
     t.string "name", null: false
     t.string "url", null: false
@@ -124,6 +133,7 @@ ActiveRecord::Schema.define(version: 2022_11_26_041537) do
   add_foreign_key "awards", "questions"
   add_foreign_key "awards", "users"
   add_foreign_key "comments", "users"
+  add_foreign_key "identities", "users"
   add_foreign_key "questions", "users"
   add_foreign_key "rates", "users"
 end
